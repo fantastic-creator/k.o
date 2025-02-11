@@ -1,0 +1,29 @@
+{
+  "name": "nextjs-bazi-app",
+  "version": "1.0.0",
+  "description": "A Next.js application for calculating and displaying Bazi (Chinese astrology) based on user input.",
+  "main": "index.js",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start"
+  },
+  "keywords": [
+    "nextjs",
+    "bazi",
+    "chinese astrology",
+    "five elements"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "dependencies": {
+    "next": "latest",
+    "react": "latest",
+    "react-dom": "latest",
+    "typescript": "latest"
+  },
+  "devDependencies": {
+    "@types/react": "latest",
+    "@types/react-dom": "latest"
+  }
+}
