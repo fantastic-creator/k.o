@@ -2,7 +2,7 @@ import math
 import re
 
 # 定义表达式常量
-EXPRESSION = "sin(89'45')"
+EXPRESSION = "sin(2'3'4') + cos(45'30') - tan(60)"
 
 def dms_to_decimal(degrees, minutes=0, seconds=0):
     """
