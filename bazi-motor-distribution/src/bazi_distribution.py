@@ -2,9 +2,11 @@ import sxtwl
 import datetime
 import math
 import serial
+import time
 
 # 串口端口配置
-SERIAL_PORT = '/dev/ttyS3'  # 如有需要请修改为你的实际端口
+SERIAL_PORT = 'COM5'  # 如有需要请修改为你的实际端口
+EACH=30  # 每个珠子对应的角度
 
 class BaziCalculator:
     """精确的八字计算器，基于sxtwl天文历法库"""
@@ -118,17 +120,27 @@ def calculate_beads_distribution(heavenly_stems, earthly_branches):
     return bead_allocation
 
 def send_motor_commands(bead_allocation):
-    ser = serial.Serial(SERIAL_PORT, 9600, timeout=10)  # 使用前置常量
+    ser = serial.Serial(SERIAL_PORT, 9600, timeout=10)
     for element, count in bead_allocation.items():
-        angle = count * 30  # Each bead corresponds to 30 degrees
+        angle = count * EACH  # Each bead corresponds to 30 degrees
         motor_idx = {'土': 1, '木': 2, '水': 3, '火': 4, '金': 5}[element]
         command = f"M{motor_idx}:{angle}\n"
+        print(f"[DEBUG] Sending command: {command.strip()}")
         ser.write(command.encode())
-        # 等待 Arduino 返回 DONE
-        while True:
-            line = ser.readline().decode().strip()
-            if line == "DONE":
-                break
+        ser.flush()
+        # 等待 Arduino 返回 DONE，带超时和debug
+        start_time = datetime.datetime.now()
+        resp = b''
+        while (datetime.datetime.now() - start_time).total_seconds() < 8:
+            if ser.in_waiting:
+                resp += ser.read(ser.in_waiting)
+                if b"DONE" in resp:
+                    print(f"[DEBUG] Received response: {resp}")
+                    break
+            else:
+                time.sleep(0.1)
+        else:
+            print(f"[DEBUG] No DONE received for command {command.strip()} (response: {resp})")
     ser.close()
 
 def main():
